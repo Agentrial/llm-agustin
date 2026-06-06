@@ -1,0 +1,17 @@
+# Entorno virtual
+.venv/
+
+# PyCharm
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Datos crudos (pueden ser pesados)
+data/raw/
+data/parsed/
+
+# Checkpoints del modelo (serán pesados)
+checkpoints/
