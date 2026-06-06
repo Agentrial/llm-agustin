@@ -9,6 +9,7 @@ Texto especializado en las Confesiones de San Agustín (siglo IV, traducción al
 ## Stack
 - Python 3.14
 - NumPy (operaciones matriciales únicamente)
+- - pdfplumber (extracción de texto del PDF — solo para el pipeline de datos)
 
 ## Fases
 1. Dataset — extracción y limpieza del PDF
