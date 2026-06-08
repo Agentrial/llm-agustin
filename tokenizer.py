@@ -6,10 +6,6 @@ class TokenizadorCharLevel:
     """
     Tokenizador a nivel de carácter.
 
-    Construye un vocabulario de todos los caracteres únicos
-    del corpus y convierte texto a secuencias de enteros
-    y viceversa.
-
     Atributos:
         char_a_idx: diccionario que mapea carácter → entero
         idx_a_char: diccionario que mapea entero → carácter
@@ -26,9 +22,6 @@ class TokenizadorCharLevel:
         Recorre el texto completo, encuentra todos los
         caracteres únicos, y les asigna un índice entero.
 
-        El orden es alfabético para que el vocabulario
-        sea reproducible — dos ejecuciones con el mismo
-        texto producen el mismo vocabulario.
         """
         # Encontrar todos los caracteres únicos
         caracteres_unicos = sorted(set(texto))
