@@ -5,7 +5,7 @@ from model import TransformerLM
 from train import cargar_modelo
 
 VOCAB_PATH      = Path("data/corpus/vocabulario.json")
-CHECKPOINT_PATH = Path("checkpoints/modelo_5000pasos.npz")
+CHECKPOINT_PATH = Path("checkpoints/modelo_20000pasos.npz")
 
 D_MODEL  = 128
 N_HEADS  = 4
@@ -51,6 +51,6 @@ if __name__ == "__main__":
 
     print("\n=== Generación con modelo entrenado ===\n")
 
-    prompt = "Grande sois, Señor"
-    resultado = generar(modelo, tok, prompt, max_tokens=300, temperatura=0.8)
+    prompt = "Grande sois, Señor, y muy digno de toda alabanza"
+    resultado = generar(modelo, tok, prompt, max_tokens=100, temperatura=1.0)
     print(resultado)

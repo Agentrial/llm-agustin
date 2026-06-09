@@ -11,13 +11,13 @@ CORPUS_PATH  = Path("data/corpus/confesiones_final.txt")
 VOCAB_PATH   = Path("data/corpus/vocabulario.json")
 
 CONTEXT_LEN  = 128
-D_MODEL      = 128
-N_HEADS      = 4
-N_LAYERS     = 2
-D_FF         = 512
+D_MODEL      = 256
+N_HEADS      = 8
+N_LAYERS     = 4
+D_FF         = 1024
 LR           = 3e-4
-PASOS        = 5000
-LOG_CADA     = 100
+PASOS        = 50000
+LOG_CADA     = 500
 SEED         = 42
 # ─────────────────────────────────────────────────────────────────
 
@@ -92,9 +92,15 @@ def entrenar():
     tok.cargar(VOCAB_PATH)
 
     datos = np.array(tok.codificar(texto), dtype=np.int32)
-    np.random.seed(SEED)
     print(f"Corpus: {len(datos):,} tokens")
     print(f"Vocabulario: {tok.vocab_size} caracteres\n")
+
+    # Split train/val — 90% train, 10% validación
+    split = int(len(datos) * 0.9)
+    datos_train = datos[:split]
+    datos_val   = datos[split:]
+    print(f"Train: {len(datos_train):,} tokens")
+    print(f"Val:   {len(datos_val):,} tokens\n")
 
     modelo = TransformerLM(
         vocab_size = tok.vocab_size,
@@ -107,29 +113,49 @@ def entrenar():
     optim = Adam(lr=LR)
 
     print(f"Iniciando entrenamiento — {PASOS} pasos")
-    print("-" * 40)
+    print(f"{'Paso':>6} | {'Train':>8} | {'Val':>8} | {'Perplejidad':>11} | {'Grad norm':>9}")
+    print("-" * 55)
 
-    perdidas = []
+    perdidas_train = []
 
     for paso in range(1, PASOS + 1):
-        x, y = obtener_batch(datos, CONTEXT_LEN)
+
+        # Batch de entrenamiento
+        x, y = obtener_batch(datos_train, CONTEXT_LEN)
         logits = modelo.forward(x)
         loss, probs = cross_entropy_loss(logits, y)
-        perdidas.append(loss)
+        perdidas_train.append(loss)
         grad_logits = gradiente_cross_entropy(probs, y)
         modelo.backward(grad_logits)
+
+        # Calcular grad norm antes de actualizar
+        grad_norm = np.sqrt(np.sum(modelo.grad_cabeza ** 2))
+
         optim.paso(modelo)
 
         if paso % LOG_CADA == 0:
-            perdida_promedio = np.mean(perdidas[-LOG_CADA:])
-            print(f"Paso {paso:>5} | pérdida: {perdida_promedio:.4f}")
+            # Pérdida de train promedio
+            loss_train = np.mean(perdidas_train[-LOG_CADA:])
 
-    print("-" * 40)
+            # Pérdida de validación — 5 batches aleatorios
+            losses_val = []
+            for _ in range(5):
+                xv, yv = obtener_batch(datos_val, CONTEXT_LEN)
+                logits_v = modelo.forward(xv)
+                loss_v, _ = cross_entropy_loss(logits_v, yv)
+                losses_val.append(loss_v)
+            loss_val = np.mean(losses_val)
+
+            # Perplejidad sobre validación
+            perplejidad = np.exp(loss_val)
+
+            print(f"{paso:>6} | {loss_train:>8.4f} | {loss_val:>8.4f} | {perplejidad:>11.2f} | {grad_norm:>9.4f}")
+
+    print("-" * 55)
     print(f"Entrenamiento completado")
-    print(f"Pérdida final: {np.mean(perdidas[-100:]):.4f}")
+    print(f"Pérdida final train: {np.mean(perdidas_train[-100:]):.4f}")
 
-    # Guardar modelo entrenado
-    guardar_modelo(modelo, Path("checkpoints/modelo_5000pasos.npz"))
+    guardar_modelo(modelo, Path(f"checkpoints/modelo_{PASOS}pasos.npz"))
 
 
 if __name__ == "__main__":
