@@ -5,7 +5,7 @@ from model import TransformerLM
 from train import cargar_modelo
 
 VOCAB_PATH      = Path("data/corpus/vocabulario.json")
-CHECKPOINT_PATH = Path("checkpoints/modelo_1000pasos.npz")
+CHECKPOINT_PATH = Path("checkpoints/modelo_5000pasos.npz")
 
 D_MODEL  = 128
 N_HEADS  = 4

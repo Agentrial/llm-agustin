@@ -16,7 +16,7 @@ N_HEADS      = 4
 N_LAYERS     = 2
 D_FF         = 512
 LR           = 3e-4
-PASOS        = 1000
+PASOS        = 5000
 LOG_CADA     = 100
 SEED         = 42
 # ─────────────────────────────────────────────────────────────────
@@ -129,7 +129,7 @@ def entrenar():
     print(f"Pérdida final: {np.mean(perdidas[-100:]):.4f}")
 
     # Guardar modelo entrenado
-    guardar_modelo(modelo, Path("checkpoints/modelo_1000pasos.npz"))
+    guardar_modelo(modelo, Path("checkpoints/modelo_5000pasos.npz"))
 
 
 if __name__ == "__main__":
