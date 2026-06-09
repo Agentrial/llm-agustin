@@ -7,10 +7,11 @@ from train import cargar_modelo
 VOCAB_PATH      = Path("data/corpus/vocabulario.json")
 CHECKPOINT_PATH = Path("checkpoints/modelo_20000pasos.npz")
 
-D_MODEL  = 128
-N_HEADS  = 4
-N_LAYERS = 2
-D_FF     = 512
+D_MODEL  = 256
+N_HEADS  = 8
+N_LAYERS = 4
+D_FF     = 1024
+CHECKPOINT_PATH = Path("checkpoints/modelo_50000pasos.npz")
 
 
 def softmax(x):
@@ -51,6 +52,6 @@ if __name__ == "__main__":
 
     print("\n=== Generación con modelo entrenado ===\n")
 
-    prompt = "Grande sois, Señor, y muy digno de toda alabanza"
-    resultado = generar(modelo, tok, prompt, max_tokens=100, temperatura=1.0)
+    prompt = "Señor, mi corazón"
+    resultado = generar(modelo, tok, prompt, max_tokens=150, temperatura=1.2)
     print(resultado)
