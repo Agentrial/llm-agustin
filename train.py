@@ -92,6 +92,7 @@ def entrenar():
     tok.cargar(VOCAB_PATH)
 
     datos = np.array(tok.codificar(texto), dtype=np.int32)
+    np.random.seed(SEED)
     print(f"Corpus: {len(datos):,} tokens")
     print(f"Vocabulario: {tok.vocab_size} caracteres\n")
 
